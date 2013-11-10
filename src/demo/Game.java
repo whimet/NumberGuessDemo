@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 public class Game {
     private NumberGuess numberGuess;
 
-    public Game(RandomGenerator generator) {
-        String answer = generator.generateNumberString(4);
+    public Game(RandomNumberGenerator generator) {
+        String answer = generator.generate();
         numberGuess = new NumberGuess(answer);
     }
 
@@ -17,9 +17,12 @@ public class Game {
     }
 
     public static void main(String[] args) throws IOException {
-        Game game = new Game(new RandomGenerator(5));
+        RandomNumberGenerator generator =
+                new RandomNumberGenerator(new RandomGenerator(5));
+        Game game = new Game(generator);
         System.out.println("Give your input:");
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader reader = new BufferedReader(
+                new InputStreamReader(System.in));
 
         boolean run = true;
         do {

@@ -13,20 +13,10 @@ public class RandomGenerator {
     }
 
     public int generate() {
-        int i = random.nextInt();
-        double d = i / (double) Integer.MAX_VALUE;
-        double v = (d + 1) / 2;
-        return (int) Math.ceil(v * max);
+        int integer = random.nextInt();
+        double decimal = integer / (double) Integer.MAX_VALUE;
+        double positiveDecimal = (decimal + 1) / 2;
+        return (int) Math.ceil(positiveDecimal * max);
     }
 
-    public String generateNumberString(int length) {
-        StringBuilder builder = new StringBuilder();
-        while (builder.length() < length) {
-            int number = generate();
-            if (builder.indexOf(String.valueOf(number)) < 0) {
-                builder.append(number);
-            }
-        }
-        return builder.toString();
-    }
 }

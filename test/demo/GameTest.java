@@ -9,16 +9,16 @@ import static org.mockito.Mockito.when;
 
 public class GameTest {
 
-    private RandomGenerator mock;
+    private RandomNumberGenerator mock;
 
     @Before
     public void setUp() {
-        mock = Mockito.mock(RandomGenerator.class);
+        mock = Mockito.mock(RandomNumberGenerator.class);
     }
 
     @Test
     public void should_return_you_win_if_user_gives_the_right_number() {
-        when(mock.generateNumberString(4)).thenReturn("1234");
+        when(mock.generate()).thenReturn("1234");
         Game game = new Game(mock);
 
         String output = game.input("1234");

@@ -1,46 +1,58 @@
 package demo;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class RandomGeneratorTest {
 
-    private RandomGenerator generator;
-
-    @Before
-    public void setUp() throws Exception {
-        generator = new RandomGenerator(5);
+    @Test
+    public void max_variance_should_be_less_than_dot_five_percentage() {
+        RandomGenerator generator = new RandomGenerator(5);
+        Double max = maxVarianceInRounds(generator, 100);
+        assertTrue(max < 0.5d);
     }
 
-    @Test
-    public void should_generate_number_string_with_specified_length() {
-        String numberString = generator.generateNumberString(4);
-        assertEquals(4, numberString.length());
-    }
-
-    @Test
-    public void should_generate_number_string_consist_of_valid_numbers() {
-        String numberString = generator.generateNumberString(4);
-        for (int i = 0; i < numberString.length(); i++) {
-            char c = numberString.charAt(i);
-            int number = Integer.parseInt(Character.toString(c));
-            assertTrue(number >= 1 && number <= 5);
+    private static Double maxVarianceInRounds(RandomGenerator generator, int rounds) {
+        ArrayList<Double> variances = new ArrayList<Double>();
+        for (int i = 0; i < rounds; i++) {
+            variances.add(runOnce(generator, 1000000));
         }
+        Collections.sort(variances);
+
+        return variances.get(variances.size() - 1);
     }
 
-    @Test
-    public void should_generate_number_string_with_no_duplicated_number() {
-        String numberString = generator.generateNumberString(4);
-        HashSet<Character> characters = new HashSet<Character>();
-        for (int i = 0; i < numberString.length(); i++) {
-            characters.add(numberString.charAt(i));
+    private static Double runOnce(RandomGenerator generator, int rounds) {
+        int[] counts = {0, 0, 0, 0, 0};
+        for (int i = 0; i < rounds; i++) {
+            int number = generator.generate();
+            counts[number - 1] = counts[number - 1] + 1;
         }
-        assertEquals(4, characters.size());
+
+        double[] percentages = {0, 0, 0, 0, 0};
+        for (int i = 0; i < counts.length; i++) {
+            percentages[i] = counts[i] / (double) rounds;
+        }
+
+        ArrayList<Double> variances = new ArrayList<Double>();
+        for (int i = 0; i < percentages.length; i++) {
+            for (int j = i + 1; j < percentages.length; j++) {
+                variances.add(100 * Math.abs(percentages[i] - percentages[j]));
+            }
+        }
+        Collections.sort(variances);
+
+//        HashMap<Integer, Double> result = new HashMap<Integer, Double>();
+//        for (int i = 0; i < percentages.length; i++) {
+//            result.put(i + 1, percentages[i]);
+//        }
+//        System.out.println(result);
+        return variances.get(variances.size() - 1);
     }
 
 }
